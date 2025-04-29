@@ -1,36 +1,26 @@
+'use client';
+
 import { useAccount, useConnect, useDisconnect } from 'wagmi'
-import { InjectedConnector } from 'wagmi/connectors/injected'
+import { injected } from 'wagmi/connectors'
 import { Button } from './ui/button'
 
 export function WalletConnect() {
   const { address, isConnected } = useAccount()
   const { connect } = useConnect({
-    connector: new InjectedConnector(),
+    connector: injected()
   })
   const { disconnect } = useDisconnect()
 
   if (isConnected) {
     return (
-      <div className="flex items-center gap-4">
-        <span className="text-sm text-gray-600">
-          {address?.slice(0, 6)}...{address?.slice(-4)}
-        </span>
-        <Button
-          variant="outline"
-          onClick={() => disconnect()}
-          className="text-sm"
-        >
-          Disconnect
-        </Button>
-      </div>
+      <Button onClick={() => disconnect()}>
+        Disconnect {address?.slice(0, 6)}...{address?.slice(-4)}
+      </Button>
     )
   }
 
   return (
-    <Button
-      onClick={() => connect()}
-      className="bg-blue-600 hover:bg-blue-700 text-white"
-    >
+    <Button onClick={() => connect()}>
       Connect Wallet
     </Button>
   )

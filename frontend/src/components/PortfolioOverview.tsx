@@ -1,3 +1,5 @@
+'use client';
+
 import { useAccount, useContractRead } from 'wagmi'
 import { formatEther } from 'viem'
 import { Card } from './ui/card'
