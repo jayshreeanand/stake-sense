@@ -1,125 +1,110 @@
 # StakeSense
 
-AI-powered strategy optimizer for restaking yields — smarter staking, safer returns.
+AI-Powered Restaking Strategy Optimizer for Ethereum stakers.
 
 ## Overview
 
-StakeSense is an on-chain, AI-powered restaking strategy optimizer that:
+StakeSense is a decentralized application that helps Ethereum stakers optimize their restaking yields through intelligent portfolio management and risk optimization. The platform uses AI to analyze AVS (Actively Validated Services) data and calculate risk scores to provide optimal allocation strategies.
 
-- Monitors restaking AVSs and strategies (Actively Validated Services)
-- Evaluates yield, slashing risk, validator reliability, and restaking performance
-- Auto-allocates user funds to optimal strategies in real time
+## Features
+
+- **Smart Portfolio Management**: Automatically rebalance your portfolio across multiple AVSs based on real-time performance data.
+- **Risk Assessment**: Advanced AI algorithms evaluate slashing risks and validator reliability to protect your assets.
+- **Yield Optimization**: Maximize your returns by identifying and capitalizing on the best restaking opportunities.
 
 ## Project Structure
 
-```
-stakesense/
-├── contracts/           # Solidity smart contracts
-├── strategy/           # AI strategy module (Python)
-├── frontend/           # Next.js + TailwindCSS frontend
-└── docs/              # Documentation
-```
-
-## Components
-
-### 1. Smart Contracts
-
-- Written in Solidity
-- Handles deposits, withdrawals, and strategy management
-- Implements access control and portfolio tracking
-
-### 2. AI Strategy Module
-
-- Python-based strategy optimizer
-- Fetches and analyzes AVS/restaking data
-- Recommends optimal allocation weights
-
-### 3. Frontend
-
-- Built with Next.js and TailwindCSS
-- Modern, responsive UI
-- Real-time portfolio tracking and management
+- `contracts/`: Smart contracts for the StakeSense vault
+- `frontend/`: Next.js frontend application
+- `strategy/`: Python-based AI strategy optimizer
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js >= 18
-- Python >= 3.9
+- Node.js (v18+)
+- Python (v3.10+)
 - Foundry (for smart contract development)
-- MetaMask or compatible Web3 wallet
+- MetaMask or another Web3 wallet
 
 ### Installation
 
 1. Clone the repository:
 
-```bash
-git clone https://github.com/yourusername/stakesense.git
-cd stakesense
-```
+   ```bash
+   git clone https://github.com/yourusername/stake-sense.git
+   cd stake-sense
+   ```
 
-2. Install dependencies:
+2. Install smart contract dependencies:
 
-```bash
-# Smart contracts
-cd contracts
-forge install
+   ```bash
+   cd contracts
+   forge install
+   ```
 
-# Frontend
-cd ../frontend
-npm install
+3. Install frontend dependencies:
 
-# Strategy module
-cd ../strategy
-python -m venv venv
-source venv/bin/activate  # or `venv\Scripts\activate` on Windows
-pip install -r requirements.txt
-```
+   ```bash
+   cd frontend
+   npm install
+   ```
 
-### Development
+4. Install strategy module dependencies:
+   ```bash
+   cd strategy
+   pip install -r requirements.txt
+   ```
 
-1. Start local blockchain:
+### Configuration
 
-```bash
-cd contracts
-forge test
-```
+1. Set up environment variables for the frontend:
 
-2. Deploy contracts:
+   ```
+   # Network Configuration
+   NEXT_PUBLIC_NETWORK_ID=1924
+   NEXT_PUBLIC_RPC_URL=https://swell-testnet.alt.technology
+   NEXT_PUBLIC_CHAIN_NAME=Swellchain Testnet
 
-```bash
-cd contracts
-forge script script/Deploy.s.sol --rpc-url <your-rpc-url> --broadcast
-```
+   # Contract Addresses
+   NEXT_PUBLIC_VAULT_ADDRESS=0x80AFC56FfDFaB6858c2F2D233024E0a9581Db4bB
+   ```
 
-3. Run strategy module:
+2. Set up environment variables for the contracts:
+   ```
+   PRIVATE_KEY=your_private_key
+   RPC_URL=https://swell-testnet.alt.technology
+   CHAIN_ID=1924
+   VAULT_ADDRESS=0x80AFC56FfDFaB6858c2F2D233024E0a9581Db4bB
+   ```
 
-```bash
-cd strategy
-python main.py
-```
+### Running the Application
 
-4. Start frontend:
+1. Start the frontend development server:
 
-```bash
-cd frontend
-npm run dev
-```
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+
+2. Open your browser and navigate to `http://localhost:3000`
+
+3. Connect your wallet and start using StakeSense!
 
 ## Testing
 
+### Smart Contracts
+
 ```bash
-# Smart contracts
 cd contracts
 forge test
+```
 
-# Frontend
+### Frontend
+
+```bash
 cd frontend
 npm test
-
-# Strategy module
-cd strategy
-pytest
 ```
 
 ## License
