@@ -58,12 +58,15 @@ build/
 cache/
 out/
 broadcast/
+# Ignore specific deployment files
+broadcast/**/run-*.json
+cache/**/run-*.json
 
 # Logs
 logs/
 *.log
 
-# Local development
+# Environment files
 .env
 .env.*
 !.env.example
@@ -79,4 +82,13 @@ htmlcov/
 coverage.xml
 *.cover
 *.py,cover
-.hypothesis/ 
+.hypothesis/
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# OS
+.DS_Store
+Thumbs.db 
