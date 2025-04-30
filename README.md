@@ -6,6 +6,8 @@ StakeSense is an AI-powered staking portfolio management platform built on Swell
 
 The project is deployed on Swell Testnet (Chain ID: 1924).
 
+Demo URL: https://stake-sense.vercel.app
+
 ### Contract Addresses
 
 - StakeSenseVault: `0x80AFC56FfDFaB6858c2F2D233024E0a9581Db4bB`
@@ -21,11 +23,11 @@ Recent test transactions have confirmed the following functionality:
 
 ## Features
 
-- 🤖 AI-driven staking strategy recommendations
-- 📊 Real-time portfolio tracking and analytics
-- 🔄 Automated rebalancing suggestions
-- 🔒 Secure wallet integration
-- 📈 Performance monitoring across multiple AVS providers
+- AI-driven staking strategy recommendations
+- Real-time portfolio tracking and analytics
+- Automated rebalancing suggestions
+- Secure wallet integration
+- Performance monitoring across multiple AVS providers
 
 ## Tech Stack
 
