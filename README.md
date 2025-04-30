@@ -1,31 +1,47 @@
 # StakeSense
 
-AI-Powered Restaking Strategy Optimizer for Ethereum stakers.
+StakeSense is an AI-powered staking portfolio management platform built on SwellChain that helps users optimize their staking strategies across various Ethereum AVS (Actively Validated Services) providers.
 
-## Overview
+## Deployment
 
-StakeSense is a decentralized application that helps Ethereum stakers optimize their restaking yields through intelligent portfolio management and risk optimization. The platform uses AI to analyze AVS (Actively Validated Services) data and calculate risk scores to provide optimal allocation strategies.
+The project is deployed on Swell Testnet (Chain ID: 1924).
+
+### Contract Addresses
+
+- StakeSenseVault: `0x80AFC56FfDFaB6858c2F2D233024E0a9581Db4bB`
+- RPC URL: `https://swell-testnet.alt.technology`
+
+### Test Transactions
+
+Recent test transactions have confirmed the following functionality:
+
+- Deposit: [0x729aebbdf427236d9c4df85966f0b73bf9df4c667472ae70267ebaca1f0f3da4](https://explorer.testnet.swell.technology/tx/0x729aebbdf427236d9c4df85966f0b73bf9df4c667472ae70267ebaca1f0f3da4)
+- Strategy Management: [0xfd6437530d3368529afb784643080e4c4fbc61ab37faeb0590cf80919cc3869c](https://explorer.testnet.swell.technology/tx/0xfd6437530d3368529afb784643080e4c4fbc61ab37faeb0590cf80919cc3869c)
+- Withdrawal: [0x6f81188888e6cddca7229e99be310b1184435f8c10503cdc9963c4bf833d2013](https://explorer.testnet.swell.technology/tx/0x6f81188888e6cddca7229e99be310b1184435f8c10503cdc9963c4bf833d2013)
 
 ## Features
 
-- **Smart Portfolio Management**: Automatically rebalance your portfolio across multiple AVSs based on real-time performance data.
-- **Risk Assessment**: Advanced AI algorithms evaluate slashing risks and validator reliability to protect your assets.
-- **Yield Optimization**: Maximize your returns by identifying and capitalizing on the best restaking opportunities.
+- 🤖 AI-driven staking strategy recommendations
+- 📊 Real-time portfolio tracking and analytics
+- 🔄 Automated rebalancing suggestions
+- 🔒 Secure wallet integration
+- 📈 Performance monitoring across multiple AVS providers
 
-## Project Structure
+## Tech Stack
 
-- `contracts/`: Smart contracts for the StakeSense vault
-- `frontend/`: Next.js frontend application
-- `strategy/`: Python-based AI strategy optimizer
+- **Frontend**: Next.js 14, TailwindCSS, wagmi v2
+- **Smart Contracts**: Solidity, Foundry
+- **AI Strategy Module**: Python, FastAPI
+- **Chain**: Swell Testnet
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (v18+)
-- Python (v3.10+)
-- Foundry (for smart contract development)
-- MetaMask or another Web3 wallet
+- Node.js 18+
+- Python 3.10+
+- Foundry
+- MetaMask wallet
 
 ### Installation
 
@@ -36,11 +52,11 @@ StakeSense is a decentralized application that helps Ethereum stakers optimize t
    cd stake-sense
    ```
 
-2. Install smart contract dependencies:
+2. Install Foundry (if not already installed):
 
    ```bash
-   cd contracts
-   forge install
+   curl -L https://foundry.paradigm.xyz | bash
+   foundryup
    ```
 
 3. Install frontend dependencies:
@@ -50,33 +66,49 @@ StakeSense is a decentralized application that helps Ethereum stakers optimize t
    npm install
    ```
 
-4. Install strategy module dependencies:
+4. Install Python dependencies:
+
    ```bash
-   cd strategy
+   cd backend
    pip install -r requirements.txt
    ```
 
 ### Configuration
 
-1. Set up environment variables for the frontend:
+1. Set up environment variables:
 
-   ```
-   # Network Configuration
-   NEXT_PUBLIC_NETWORK_ID=1924
-   NEXT_PUBLIC_RPC_URL=https://swell-testnet.alt.technology
-   NEXT_PUBLIC_CHAIN_NAME=Swellchain Testnet
+Frontend (.env.local):
 
-   # Contract Addresses
-   NEXT_PUBLIC_VAULT_ADDRESS=0x80AFC56FfDFaB6858c2F2D233024E0a9581Db4bB
-   ```
+```env
+# Contract Configuration
+NEXT_PUBLIC_VAULT_ADDRESS=0x80AFC56FfDFaB6858c2F2D233024E0a9581Db4bB
 
-2. Set up environment variables for the contracts:
-   ```
-   PRIVATE_KEY=your_private_key
-   RPC_URL=https://swell-testnet.alt.technology
-   CHAIN_ID=1924
-   VAULT_ADDRESS=0x80AFC56FfDFaB6858c2F2D233024E0a9581Db4bB
-   ```
+# Network Configuration
+NEXT_PUBLIC_RPC_URL=https://swell-testnet.alt.technology
+NEXT_PUBLIC_CHAIN_ID=1924
+NEXT_PUBLIC_CHAIN_NAME=Swell Testnet
+```
+
+Backend (.env):
+
+```env
+DATABASE_URL=your_database_url
+API_KEY=your_api_key
+```
+
+2. Deploy the smart contract (if deploying a new instance):
+
+```bash
+cd contracts
+forge script script/Deploy.s.sol:DeployScript --rpc-url https://swell-testnet.alt.technology --broadcast --chain-id 1924
+```
+
+3. Test the contract:
+
+```bash
+cd contracts
+forge script script/TestVault.s.sol:TestVaultScript --rpc-url https://swell-testnet.alt.technology --broadcast --chain-id 1924
+```
 
 ### Running the Application
 
@@ -87,9 +119,14 @@ StakeSense is a decentralized application that helps Ethereum stakers optimize t
    npm run dev
    ```
 
-2. Open your browser and navigate to `http://localhost:3000`
+2. Start the backend server:
 
-3. Connect your wallet and start using StakeSense!
+   ```bash
+   cd backend
+   python run.py
+   ```
+
+The application will be available at `http://localhost:3000`.
 
 ## Testing
 
@@ -104,12 +141,34 @@ forge test
 
 ```bash
 cd frontend
-npm test
+npm run test
 ```
 
-## License
+### Backend
 
-MIT
+```bash
+cd backend
+pytest
+```
+
+## Architecture
+
+### Smart Contracts
+
+- `StakeSenseVault.sol`: Main vault contract for managing user deposits and strategy execution
+- `StrategyManager.sol`: Handles strategy allocation and rebalancing
+
+### Frontend Components
+
+- `PortfolioOverview`: Displays user's current portfolio status
+- `VaultActions`: Handles deposit/withdraw operations
+- `AIRecommendations`: Shows AI-generated strategy suggestions
+
+### Backend Services
+
+- Data Collection Layer: Fetches AVS metrics and performance data
+- AI Decision Engine: Processes data and generates strategy recommendations
+- API Service: Provides endpoints for frontend integration
 
 ## Contributing
 
@@ -118,3 +177,7 @@ MIT
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

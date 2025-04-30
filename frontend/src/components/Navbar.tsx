@@ -1,17 +1,26 @@
 'use client';
 
-import { WalletConnect } from './WalletConnect'
+import Link from 'next/link';
+import { ConnectButton } from './ConnectButton';
 
-export default function Navbar() {
+export function Navbar() {
   return (
-    <nav className="bg-white shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+    <nav className="border-b">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <span className="text-xl font-bold text-gray-900">StakeSense</span>
+            <Link href="/" className="text-2xl font-bold text-primary">
+              StakeSense
+            </Link>
           </div>
-          <div className="flex items-center">
-            <WalletConnect />
+          <div className="flex items-center space-x-6">
+            <Link 
+              href="/dashboard" 
+              className="text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              Dashboard
+            </Link>
+            <ConnectButton />
           </div>
         </div>
       </div>
