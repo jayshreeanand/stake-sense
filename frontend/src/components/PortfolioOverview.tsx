@@ -1,31 +1,94 @@
 'use client';
 
-import { useAccount, useReadContract } from 'wagmi'
+import { useEffect, useState } from 'react'
+import { useReadContract, useAccount, useChainId } from 'wagmi'
 import { formatEther } from 'viem'
 import { Card } from './ui/card'
-import { Progress } from './ui/progress'
 import { useVaultContract } from '../hooks/useVaultContract'
 
+interface Strategy {
+  avsAddress: string
+  allocation: bigint
+  active: boolean
+}
+
+type PortfolioInfo = [bigint, Strategy[]]
+
+const SWELL_TESTNET_CHAIN_ID = 1924
+
 export function PortfolioOverview() {
-  const { address } = useAccount()
+  const { isConnected } = useAccount()
+  const chainId = useChainId()
+  const [mounted, setMounted] = useState(false)
   const vault = useVaultContract()
 
-  const { data: userInfo } = useReadContract({
-    ...vault,
-    functionName: 'userInfo',
-    args: [address || '0x0000000000000000000000000000000000000000'],
-  })
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
-  const { data: strategy } = useReadContract({
-    ...vault,
-    functionName: 'strategies',
-    args: [BigInt(0)],
-  })
+  const isCorrectNetwork = chainId === SWELL_TESTNET_CHAIN_ID
 
-  // Safely handle userInfo data
-  const balance = userInfo && Array.isArray(userInfo) && userInfo[0] 
-    ? formatEther(userInfo[0]) 
-    : '0'
+  const { data: portfolioInfo, isError, isLoading } = useReadContract({
+    ...vault,
+    functionName: 'getPortfolioInfo',
+    args: [],
+  }) as { data: PortfolioInfo | undefined, isError: boolean, isLoading: boolean }
+
+  // Handle server-side rendering / hydration
+  if (!mounted) {
+    return (
+      <Card className="p-6">
+        <p>Loading...</p>
+      </Card>
+    )
+  }
+
+  // Handle wallet connection state
+  if (!isConnected) {
+    return (
+      <Card className="p-6">
+        <p className="text-gray-500">Please connect your wallet to view portfolio information.</p>
+      </Card>
+    )
+  }
+
+  // Handle wrong network
+  if (!isCorrectNetwork) {
+    return (
+      <Card className="p-6">
+        <p className="text-red-500">Please switch to Swell Testnet to view portfolio information.</p>
+        <p className="text-sm text-gray-500 mt-2">Current network: {chainId === SWELL_TESTNET_CHAIN_ID ? 'Swell Testnet' : 'Wrong Network'}</p>
+      </Card>
+    )
+  }
+
+  // Get total value from portfolio info
+  let totalValue = '0'
+  if (portfolioInfo?.[0]) {
+    totalValue = formatEther(portfolioInfo[0])
+  }
+
+  // Get strategies from portfolio info
+  const strategies = portfolioInfo?.[1] ?? [] as Strategy[]
+
+  if (isLoading) {
+    return (
+      <Card className="p-6">
+        <p>Loading portfolio information...</p>
+      </Card>
+    )
+  }
+
+  if (isError) {
+    return (
+      <Card className="p-6">
+        <div className="space-y-2">
+          <p className="text-red-500">Error loading portfolio information.</p>
+          <p className="text-sm text-gray-500">Make sure you are connected to Swell Testnet and try again.</p>
+        </div>
+      </Card>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -34,23 +97,24 @@ export function PortfolioOverview() {
         <div className="space-y-4">
           <div>
             <p className="text-sm text-gray-600">Total Balance</p>
-            <p className="text-3xl font-bold">{balance} ETH</p>
+            <p className="text-3xl font-bold">{totalValue} ETH</p>
           </div>
           
-          <div>
-            <p className="text-sm text-gray-600 mb-2">Strategy Allocations</p>
-            {strategy && Array.isArray(strategy) && strategy[0] && (
-              <div className="mb-2">
-                <div className="flex justify-between text-sm mb-1">
-                  <span>{strategy[0].toString().slice(0, 6)}...{strategy[0].toString().slice(-4)}</span>
-                  <span>{Number(strategy[1] || BigInt(0)) / 100}%</span>
+          {strategies.length > 0 && (
+            <div className="mt-6">
+              <p className="text-sm text-gray-600 mb-2">Strategy Allocations</p>
+              {strategies.map((strategy: Strategy, index: number) => (
+                <div key={index} className="flex justify-between items-center py-2">
+                  <span className="text-sm">Strategy {index + 1}</span>
+                  <span className="text-sm font-medium">
+                    {(Number(strategy.allocation) / 100).toFixed(2)}%
+                  </span>
                 </div>
-                <Progress value={Number(strategy[1] || BigInt(0)) / 100} className="h-2" />
-              </div>
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </Card>
     </div>
-  );
+  )
 } 

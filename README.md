@@ -1,6 +1,10 @@
 # StakeSense
 
-StakeSense is an AI-powered staking portfolio management platform built on SwellChain that helps users optimize their staking strategies across various Ethereum AVS (Actively Validated Services) providers.
+AI-powered strategy optimizer for restaking yields — smarter staking, safer returns.
+
+## Overview
+
+StakeSense is an on-chain AI-powered strategy optimizer that helps users allocate their restaked assets across AVSs (Actively Validated Services) for the best risk-adjusted yield. It functions like a DeFi AI-advisor for the restaking economy.
 
 ## Deployment
 
@@ -23,163 +27,188 @@ Recent test transactions have confirmed the following functionality:
 
 ## Features
 
-- AI-driven staking strategy recommendations
-- Real-time portfolio tracking and analytics
-- Automated rebalancing suggestions
-- Secure wallet integration
-- Performance monitoring across multiple AVS providers
+### Smart Contracts
 
-## Tech Stack
+- **StakeSenseVault**: Manages user deposits and withdrawals
 
-- **Frontend**: Next.js 14, TailwindCSS, wagmi v2
-- **Smart Contracts**: Solidity, Foundry
-- **AI Strategy Module**: Python, FastAPI
-- **Chain**: Swell Testnet
+  - Accepts ETH deposits
+  - Allocates funds across AVSs based on strategy weights
+  - Supports emergency withdrawals
+  - Deployed at: `0x80AFC56FfDFaB6858c2F2D233024E0a9581Db4bB` (Swell Testnet)
 
-## Getting Started
+- **Strategy Management**:
+  - Dynamic allocation weights for each AVS
+  - Admin-controlled strategy updates
+  - Real-time portfolio information
+
+### AI Engine
+
+- **Data Collection**:
+
+  - AVS yield monitoring
+  - Validator uptime tracking
+  - Slashing risk assessment
+  - Real-time ROI calculations
+
+- **Strategy Optimization**:
+  - Risk-adjusted scoring system
+  - Dynamic weight calculations
+  - Automated rebalancing recommendations
+
+### Frontend Interface
+
+- **Portfolio Overview**:
+
+  - Total balance display
+  - Current strategy allocations
+  - Performance metrics
+
+- **User Actions**:
+  - Deposit ETH
+  - Withdraw ETH
+  - View strategy details
+
+## Architecture
+
+### Smart Contracts (Solidity)
+
+```
+contracts/
+├── src/
+│   ├── StakeSenseVault.sol    # Main vault contract
+│   ├── interfaces/            # Contract interfaces
+│   └── test/                  # Contract tests
+└── script/                    # Deployment scripts
+```
+
+### AI Engine (Python)
+
+```
+backend/
+├── data_collector.py    # AVS metrics collection
+├── ai_engine.py         # Strategy optimization
+└── main.py             # API endpoints
+```
+
+### Frontend (Next.js)
+
+```
+frontend/
+├── src/
+│   ├── components/     # React components
+│   ├── hooks/         # Custom hooks
+│   └── lib/           # Utilities
+└── public/            # Static assets
+```
+
+## Setup and Installation
 
 ### Prerequisites
 
 - Node.js 18+
-- Python 3.10+
+- Python 3.9+
 - Foundry
-- MetaMask wallet
 
-### Installation
+### Smart Contracts
 
-1. Clone the repository:
+```bash
+# Install dependencies
+cd contracts
+forge install
 
-   ```bash
-   git clone https://github.com/yourusername/stake-sense.git
-   cd stake-sense
-   ```
+# Deploy contracts
+forge script script/Deploy.s.sol --rpc-url https://swell-testnet.alt.technology --broadcast --chain-id 1924
 
-2. Install Foundry (if not already installed):
+# Run tests
+forge test
+```
 
-   ```bash
-   curl -L https://foundry.paradigm.xyz | bash
-   foundryup
-   ```
+### Backend
 
-3. Install frontend dependencies:
+```bash
+# Install dependencies
+cd backend
+pip install -r requirements.txt
 
-   ```bash
-   cd frontend
-   npm install
-   ```
+# Start server
+python main.py
+```
 
-4. Install Python dependencies:
+### Frontend
 
-   ```bash
-   cd backend
-   pip install -r requirements.txt
-   ```
+```bash
+# Install dependencies
+cd frontend
+npm install
 
-### Configuration
+# Start development server
+npm run dev
+```
 
-1. Set up environment variables:
+## Configuration
 
-Frontend (.env.local):
+### Environment Variables
 
-```env
-# Contract Configuration
-NEXT_PUBLIC_VAULT_ADDRESS=0x80AFC56FfDFaB6858c2F2D233024E0a9581Db4bB
+#### Frontend (.env)
 
-# Network Configuration
+```
+NEXT_PUBLIC_NETWORK_ID=1924
 NEXT_PUBLIC_RPC_URL=https://swell-testnet.alt.technology
-NEXT_PUBLIC_CHAIN_ID=1924
-NEXT_PUBLIC_CHAIN_NAME=Swell Testnet
+NEXT_PUBLIC_CHAIN_NAME=Swellchain Testnet
+NEXT_PUBLIC_VAULT_ADDRESS=0x80AFC56FfDFaB6858c2F2D233024E0a9581Db4bB
 ```
 
-Backend (.env):
+#### Backend (.env)
 
-```env
-DATABASE_URL=your_database_url
-API_KEY=your_api_key
+```
+RPC_URL=https://swell-testnet.alt.technology
+VAULT_ADDRESS=0x80AFC56FfDFaB6858c2F2D233024E0a9581Db4bB
 ```
 
-2. Deploy the smart contract (if deploying a new instance):
+## Testing
+
+### Smart Contract Tests
 
 ```bash
 cd contracts
-forge script script/Deploy.s.sol:DeployScript --rpc-url https://swell-testnet.alt.technology --broadcast --chain-id 1924
+forge test -vv
 ```
 
-3. Test the contract:
+### Integration Tests
 
 ```bash
 cd contracts
 forge script script/TestVault.s.sol:TestVaultScript --rpc-url https://swell-testnet.alt.technology --broadcast --chain-id 1924
 ```
 
-### Running the Application
+## API Endpoints
 
-1. Start the frontend development server:
+### Backend API
 
-   ```bash
-   cd frontend
-   npm run dev
-   ```
+- `GET /avs/list`: List all available AVS services
+- `GET /avs/metrics`: Get current metrics for all AVS services
+- `POST /strategy/optimize`: Get optimal allocation strategy
+- `GET /health`: Health check endpoint
 
-2. Start the backend server:
+## Security
 
-   ```bash
-   cd backend
-   python run.py
-   ```
-
-The application will be available at `http://localhost:3000`.
-
-## Testing
-
-### Smart Contracts
-
-```bash
-cd contracts
-forge test
-```
-
-### Frontend
-
-```bash
-cd frontend
-npm run test
-```
-
-### Backend
-
-```bash
-cd backend
-pytest
-```
-
-## Architecture
-
-### Smart Contracts
-
-- `StakeSenseVault.sol`: Main vault contract for managing user deposits and strategy execution
-- `StrategyManager.sol`: Handles strategy allocation and rebalancing
-
-### Frontend Components
-
-- `PortfolioOverview`: Displays user's current portfolio status
-- `VaultActions`: Handles deposit/withdraw operations
-- `AIRecommendations`: Shows AI-generated strategy suggestions
-
-### Backend Services
-
-- Data Collection Layer: Fetches AVS metrics and performance data
-- AI Decision Engine: Processes data and generates strategy recommendations
-- API Service: Provides endpoints for frontend integration
+- All contracts are upgradeable via proxy pattern
+- Admin controls for strategy updates
+- Emergency withdrawal functionality
+- Rate limiting on rebalancing
 
 ## Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT
+
+## Contact
+
+For questions and support, please open an issue in the repository.
