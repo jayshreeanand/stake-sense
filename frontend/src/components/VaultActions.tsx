@@ -1,36 +1,27 @@
 'use client';
 
-import { useAccount } from 'wagmi'
+import { useAccount, useReadContract, useWriteContract } from 'wagmi'
 import { parseEther } from 'viem'
 import { useVaultContract } from '../hooks/useVaultContract'
-import { useContractWrite, useContractRead } from 'wagmi'
 
 export function VaultActions() {
   const { address } = useAccount()
   const vault = useVaultContract()
 
-  const { data: portfolioInfo } = useContractRead({
+  const { data: portfolioInfo } = useReadContract({
     ...vault,
     functionName: 'getPortfolioInfo',
     args: [address || '0x0000000000000000000000000000000000000000'],
-    enabled: !!address,
   })
 
-  const { writeAsync: depositFn } = useContractWrite({
-    ...vault,
-    functionName: 'deposit',
-  })
-
-  const { writeAsync: withdrawFn } = useContractWrite({
-    ...vault,
-    functionName: 'withdraw',
-  })
+  const { writeContract } = useWriteContract()
 
   const handleDeposit = async (amount: string) => {
-    if (!depositFn) return
+    if (!writeContract) return
     try {
-      await depositFn({
-        args: [],
+      await writeContract({
+        ...vault,
+        functionName: 'deposit',
         value: parseEther(amount),
       })
     } catch (error) {
@@ -39,9 +30,11 @@ export function VaultActions() {
   }
 
   const handleWithdraw = async (amount: string) => {
-    if (!withdrawFn) return
+    if (!writeContract) return
     try {
-      await withdrawFn({
+      await writeContract({
+        ...vault,
+        functionName: 'withdraw',
         args: [parseEther(amount)],
       })
     } catch (error) {
