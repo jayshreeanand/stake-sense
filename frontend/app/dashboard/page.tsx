@@ -1,63 +1,25 @@
-import React from 'react';
-import dynamic from 'next/dynamic';
-import { Card, CardBody } from '@/components/ui';
+'use client';
 
-const AIRecommendations = dynamic(() => import('@/components/AIRecommendations'), {
-  ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center h-64">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-    </div>
-  ),
-});
+import { Card } from '@/components/ui/card';
+import { PortfolioOverview } from '@/components/PortfolioOverview';
+import { VaultActions } from '@/components/VaultActions';
+import AIRecommendations from '@/components/AIRecommendations';
 
-const VaultActions = dynamic(() => import('@/components/VaultActions'), {
-  ssr: false,
-});
-
-const PortfolioOverview = dynamic(() => import('@/components/PortfolioOverview'), {
-  ssr: false,
-});
-
-export default function DashboardPage() {
+export default function Dashboard() {
   return (
-    <div className="space-y-8">
-      {/* Portfolio Overview Section */}
-      <section>
-        <div className="mb-4">
-          <h1 className="text-3xl font-bold">Portfolio Overview</h1>
-          <p className="text-muted-foreground mt-2">
-            Track your staking portfolio performance and metrics
-          </p>
-        </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
         <PortfolioOverview />
-      </section>
-
-      {/* Vault Actions Section */}
-      <section>
-        <div className="mb-4">
-          <h2 className="text-2xl font-bold">Vault Actions</h2>
-          <p className="text-muted-foreground mt-2">
-            Manage your deposits and withdrawals
-          </p>
+        <div className="mt-6">
+          <VaultActions />
         </div>
-        <Card>
-          <CardBody>
-            <VaultActions />
-          </CardBody>
+      </div>
+      <div>
+        <Card className="p-6">
+          <h2 className="text-2xl font-bold mb-4">AI Strategy Recommendations</h2>
+          <AIRecommendations />
         </Card>
-      </section>
-
-      {/* AI Recommendations Section */}
-      <section>
-        <div className="mb-4">
-          <h2 className="text-2xl font-bold">AI Strategy Recommendations</h2>
-          <p className="text-muted-foreground mt-2">
-            Get AI-powered insights and recommendations for your staking portfolio
-          </p>
-        </div>
-        <AIRecommendations />
-      </section>
+      </div>
     </div>
   );
 } 

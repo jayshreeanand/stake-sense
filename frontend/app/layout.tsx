@@ -1,9 +1,13 @@
 import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
 import './globals.css'
+import { WagmiProvider } from '@/providers/WagmiProvider'
+
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'StakeSense - AI-Powered Staking Portfolio Manager',
-  description: 'Optimize your staking portfolio with AI-driven insights and recommendations',
+  title: 'StakeSense',
+  description: 'AI-powered staking portfolio management',
 }
 
 export default function RootLayout({
@@ -13,10 +17,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <main className="min-h-screen bg-background">
-          {children}
-        </main>
+      <body className={inter.className}>
+        <WagmiProvider>
+          <main className="min-h-screen bg-background">
+            {children}
+          </main>
+        </WagmiProvider>
       </body>
     </html>
   )
