@@ -4,7 +4,13 @@ python-dotenv==1.0.1
 web3==6.15.1
 pandas==2.2.1
 numpy==1.26.4
-scikit-learn==1.4.1
+scikit-learn==1.5.2
 requests==2.31.0
 aiohttp==3.9.1
-python-jose==3.3.0 
+python-jose==3.3.0
+torch==2.2.1
+transformers==4.38.2
+python-binance==1.0.19
+ccxt==4.2.15
+ta==0.10.2
+statsmodels==0.14.1 
