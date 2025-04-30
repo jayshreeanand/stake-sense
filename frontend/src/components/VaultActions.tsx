@@ -1,111 +1,76 @@
 'use client';
 
-import { useState } from 'react'
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
+import { useAccount } from 'wagmi'
 import { parseEther } from 'viem'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-
-const VAULT_ADDRESS = process.env.NEXT_PUBLIC_VAULT_ADDRESS as `0x${string}`
-
-const vaultABI = [
-  {
-    name: 'deposit',
-    type: 'function',
-    stateMutability: 'payable',
-    inputs: [],
-    outputs: []
-  },
-  {
-    name: 'withdraw',
-    type: 'function',
-    stateMutability: 'nonpayable',
-    inputs: [{ name: 'amount', type: 'uint256' }],
-    outputs: []
-  }
-] as const
+import { useVaultContract } from '../hooks/useVaultContract'
+import { useContractWrite, useContractRead } from 'wagmi'
 
 export function VaultActions() {
-  const [amount, setAmount] = useState('')
-  const { isConnected } = useAccount()
-  const { writeContract, data: txData } = useWriteContract()
+  const { address } = useAccount()
+  const vault = useVaultContract()
 
-  const { isLoading: isTransactionLoading } = useWaitForTransactionReceipt({
-    hash: txData
+  const { data: portfolioInfo } = useContractRead({
+    ...vault,
+    functionName: 'getPortfolioInfo',
+    args: [address || '0x0000000000000000000000000000000000000000'],
+    enabled: !!address,
   })
 
-  const handleDeposit = async () => {
-    if (!amount) return
-    
+  const { writeAsync: depositFn } = useContractWrite({
+    ...vault,
+    functionName: 'deposit',
+  })
+
+  const { writeAsync: withdrawFn } = useContractWrite({
+    ...vault,
+    functionName: 'withdraw',
+  })
+
+  const handleDeposit = async (amount: string) => {
+    if (!depositFn) return
     try {
-      await writeContract({
-        address: VAULT_ADDRESS,
-        abi: vaultABI,
-        functionName: 'deposit',
-        value: parseEther(amount)
+      await depositFn({
+        args: [],
+        value: parseEther(amount),
       })
     } catch (error) {
-      console.error('Deposit failed:', error)
+      console.error('Error depositing:', error)
     }
   }
 
-  const handleWithdraw = async () => {
-    if (!amount) return
-    
+  const handleWithdraw = async (amount: string) => {
+    if (!withdrawFn) return
     try {
-      await writeContract({
-        address: VAULT_ADDRESS,
-        abi: vaultABI,
-        functionName: 'withdraw',
-        args: [parseEther(amount)]
+      await withdrawFn({
+        args: [parseEther(amount)],
       })
     } catch (error) {
-      console.error('Withdrawal failed:', error)
+      console.error('Error withdrawing:', error)
     }
-  }
-
-  if (!isConnected) {
-    return (
-      <Card className="p-6">
-        <p className="text-center text-gray-500">Please connect your wallet to interact with the vault.</p>
-      </Card>
-    )
   }
 
   return (
-    <Card className="p-6">
-      <div className="space-y-4">
-        <div>
-          <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
-            Amount (ETH)
-          </label>
-          <Input
-            id="amount"
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="0.0"
-            className="mt-1"
-          />
-        </div>
-        <div className="flex space-x-4">
-          <Button
-            onClick={handleDeposit}
-            disabled={!amount || isTransactionLoading}
-            className="flex-1"
-          >
-            {isTransactionLoading ? 'Processing...' : 'Deposit'}
-          </Button>
-          <Button
-            onClick={handleWithdraw}
-            disabled={!amount || isTransactionLoading}
-            className="flex-1"
-          >
-            {isTransactionLoading ? 'Processing...' : 'Withdraw'}
-          </Button>
-        </div>
+    <div className="space-y-4">
+      <div>
+        <h2 className="text-lg font-semibold">Your Portfolio</h2>
+        <p>Balance: {portfolioInfo ? Number(portfolioInfo) / 1e18 : 0} ETH</p>
       </div>
-    </Card>
+      
+      <div className="space-y-2">
+        <button
+          onClick={() => handleDeposit('0.1')}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Deposit 0.1 ETH
+        </button>
+        
+        <button
+          onClick={() => handleWithdraw('0.1')}
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-2"
+        >
+          Withdraw 0.1 ETH
+        </button>
+      </div>
+    </div>
   )
 } 

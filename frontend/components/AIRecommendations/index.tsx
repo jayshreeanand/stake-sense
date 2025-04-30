@@ -19,7 +19,7 @@ import {
   CardBody,
   Button,
   Badge,
-} from '@/components/ui';
+} from '../ui';
 
 // Register Chart.js components
 ChartJS.register(ArcElement, ChartTooltip, ChartLegend);
@@ -45,6 +45,51 @@ interface HistoricalPerformance {
   max_drawdown: number[];
 }
 
+// Mock data for development
+const mockData = {
+  allocations: [
+    {
+      avs_name: "EigenLayer",
+      allocation: 40,
+      risk_metrics: {
+        operational_risk: 0.2,
+        technical_risk: 0.15,
+        financial_risk: 0.25,
+        network_risk: 0.18,
+        composite_score: 0.8
+      }
+    },
+    {
+      avs_name: "StakeWise",
+      allocation: 30,
+      risk_metrics: {
+        operational_risk: 0.25,
+        technical_risk: 0.2,
+        financial_risk: 0.3,
+        network_risk: 0.22,
+        composite_score: 0.75
+      }
+    },
+    {
+      avs_name: "Lido",
+      allocation: 30,
+      risk_metrics: {
+        operational_risk: 0.18,
+        technical_risk: 0.22,
+        financial_risk: 0.28,
+        network_risk: 0.2,
+        composite_score: 0.78
+      }
+    }
+  ],
+  historical_performance: {
+    returns: [0.05, 0.08, 0.12, 0.15, 0.18, 0.22, 0.25],
+    volatility: [0.02, 0.03, 0.04, 0.03, 0.05, 0.04, 0.03],
+    sharpe_ratio: [2.5, 2.7, 3.0, 5.0, 3.6, 5.5, 8.3],
+    max_drawdown: [-0.02, -0.03, -0.02, -0.04, -0.03, -0.02, -0.01]
+  }
+};
+
 const AIRecommendations: React.FC = () => {
   const [allocations, setAllocations] = useState<AVSAllocation[]>([]);
   const [historicalPerformance, setHistoricalPerformance] = useState<HistoricalPerformance | null>(null);
@@ -58,10 +103,10 @@ const AIRecommendations: React.FC = () => {
   const fetchRecommendations = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/strategy/optimize');
-      const data = await response.json();
-      setAllocations(data.allocations);
-      setHistoricalPerformance(data.historical_performance);
+      // Simulate API call with mock data
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setAllocations(mockData.allocations);
+      setHistoricalPerformance(mockData.historical_performance);
     } catch (err) {
       setError('Failed to fetch recommendations');
       console.error(err);
