@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   LineChart,
   Line,
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -16,7 +14,6 @@ import {
   Card,
   CardHeader,
   CardBody,
-  CardFooter,
   Button,
   Badge,
 } from '@/components/ui';
