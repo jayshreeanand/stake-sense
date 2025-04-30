@@ -5,20 +5,20 @@ import { ConnectButton } from './ConnectButton';
 
 export function Navbar() {
   return (
-    <nav className="border-b">
+    <nav className="border-b border-gray-800">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <Link href="/" className="text-2xl font-bold text-primary">
+            <Link href="/" className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
               StakeSense
             </Link>
           </div>
           <div className="flex items-center space-x-6">
             <Link 
-              href="/dashboard" 
-              className="text-gray-600 hover:text-gray-900 transition-colors"
+              href="/app" 
+              className="text-gray-300 hover:text-white transition-colors"
             >
-              Dashboard
+              App
             </Link>
             <ConnectButton />
           </div>
